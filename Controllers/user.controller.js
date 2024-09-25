@@ -9,20 +9,26 @@ const userController = {
             const result = await userService.registerUser(name, email, password);
 
             if (result.status) {
-                await mailService.sendEmail(
-                    name,
-                    email
-                );
+
+                try {
+                    await mailService.sendEmail(name, email);
+
+                } catch (mailError) {
+                    console.error('Error sending email:', mailError);
+                }
+
                 res.status(200).json({
                     response_code: 200,
                     result
                 });
+
             } else {
                 res.status(400).json({
                     response_code: 400,
                     result
                 });
             }
+            
         } catch (error) {
             console.error(error);
             res.status(500).json({
